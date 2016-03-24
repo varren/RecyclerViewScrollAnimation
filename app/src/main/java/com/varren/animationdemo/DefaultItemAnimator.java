@@ -413,7 +413,6 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
 
         final ViewPropertyAnimatorCompat animIn = ViewCompat.animate(newView)
                 .setDuration(getChangeDuration())
-                .setInterpolator(interpolator)
                 .translationY(0)
                 .alpha(1);
 
