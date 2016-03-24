@@ -33,22 +33,15 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new MyAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.getItemAnimator().setChangeDuration(500);
+        recyclerView.getItemAnimator().setChangeDuration(400);
     }
 
     private void sort() {
         for (int i = 0, j = mItems.size() - 1; i < j; i++, j--)
             Collections.swap(mItems, i, j);
 
-        // Just small optimisation.
-        // can use adapter.notifyItemRangeChanged(0, mItems.size());
-
         MyAdapter adapter = (MyAdapter) recyclerView.getAdapter();
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        int firstVisible = layoutManager.findFirstVisibleItemPosition();
-        int lastVisible = layoutManager.findLastVisibleItemPosition();
-
-        adapter.notifyItemRangeChanged(firstVisible, lastVisible);
+        adapter.notifyItemRangeChanged(0, mItems.size());
     }
 
     /************************************************************************************************

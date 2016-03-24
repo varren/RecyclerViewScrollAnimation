@@ -374,7 +374,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
         final ViewPropertyAnimatorCompat animOut = ViewCompat.animate(view)
                 .setDuration(getChangeDuration())
                 .setInterpolator(interpolator)
-                .translationX(view.getRootView().getWidth())
+                .translationX(view.getRootView().getWidth() + 1)
                 .alpha(0);
 
         animOut.setListener(new VpaListenerAdapter() {
@@ -406,7 +406,7 @@ public class DefaultItemAnimator extends SimpleItemAnimator {
     private void animateChangeInImpl(final RecyclerView.ViewHolder newHolder, final View newView) {
 
         // setting starting animation params for view
-        ViewCompat.setTranslationY(newView, newView.getHeight());
+        ViewCompat.setTranslationY(newView, newView.getHeight() * 2);
         ViewCompat.setAlpha(newView, 0);
 
         mChangeAnimations.add(newHolder);
