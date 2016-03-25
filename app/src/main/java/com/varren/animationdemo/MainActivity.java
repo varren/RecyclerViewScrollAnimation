@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,13 +28,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycleView);
 
         //generating random data
-        for (int i = 0; i < 5000; i++) mItems.add("Cell " + i);
+        for (int i = 0; i < 50; i++) mItems.add("Cell " + i);
 
         //recyclerView setup
         recyclerView.setAdapter(new MyAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.getItemAnimator().setChangeDuration(400);
+        recyclerView.getItemAnimator().setChangeDuration(300);
     }
 
     private void sort() {
@@ -41,7 +42,14 @@ public class MainActivity extends AppCompatActivity {
             Collections.swap(mItems, i, j);
 
         MyAdapter adapter = (MyAdapter) recyclerView.getAdapter();
-        adapter.notifyItemRangeChanged(0, mItems.size());
+        //adapter.notifyItemRangeChanged(0, mItems.size());
+
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int firstVisible = layoutManager.findFirstVisibleItemPosition();
+        int lastVisible = layoutManager.findLastVisibleItemPosition();
+        int itemsChanged = lastVisible - firstVisible + 1; // + 1 because we start count items from 0
+
+        adapter.notifyItemRangeChanged(firstVisible, itemsChanged);
     }
 
     /************************************************************************************************
