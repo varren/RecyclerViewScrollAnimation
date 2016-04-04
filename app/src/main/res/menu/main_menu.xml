@@ -8,6 +8,14 @@
         android:title="Sort"
         app:showAsAction="always"
 />
-
-
+    <item
+        android:id="@+id/action_add"
+        android:title="Add"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/action_remove"
+        android:title="Rem"
+        app:showAsAction="always"
+        />
 </menu>

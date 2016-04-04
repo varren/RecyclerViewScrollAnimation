@@ -25,7 +25,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<Integer> mItems = new ArrayList<>();
-
+    private DefaultItemAnimator animator = new DefaultItemAnimator();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         MyAdapter adapter = new MyAdapter();
         adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(animator);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         int itemsChanged = lastVisible - firstVisible + 1; // + 1 because we start count items from 0
         int start = firstVisible - itemsChanged> 0 ? firstVisible - itemsChanged: 0;
         adapter.notifyItemRangeChanged(start, itemsChanged+itemsChanged);
+
         //adapter.notifyItemRangeChanged(0, mItems.size());
     }
 
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             });
            // Log.e("onBindViewHolder","onBindViewHolder" + holder.getAdapterPosition());
             holder.titleView.setText(("Cell " + mItems.get(position)));
+            //holder.titleView.setTextSize(5 + mItems.get(position));
             holder.titleView.setTextSize(5 + 50*(random.nextInt(2)));
         }
 
@@ -110,12 +113,22 @@ public class MainActivity extends AppCompatActivity {
      *************************************************************************************************/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        MyAdapter adapter = (MyAdapter) recyclerView.getAdapter();
         switch (item.getItemId()) {
             case R.id.action_sort:
                 Log.e("On PRESS","SORT");
                 sort();
                 return true;
-
+            case R.id.action_add:
+                Log.e("On PRESS","ADD");
+                mItems.add(2, mItems.size());
+                adapter.notifyItemInserted(2);
+                return true;
+            case R.id.action_remove:
+                Log.e("On PRESS","REMOVE");
+                mItems.remove(2);
+                adapter.notifyItemRemoved(2);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
