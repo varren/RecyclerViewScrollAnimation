@@ -1,14 +1,18 @@
 package com.varren.animationdemo;
 
+import android.content.Context;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,10 +20,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private List<String> mItems = new ArrayList<>();
+    private List<Integer> mItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycleView);
 
         //generating random data
-        for (int i = 0; i < 50; i++) mItems.add("Cell " + i);
+        for (int i = 0; i < 50; i++) mItems.add(i);
 
         //recyclerView setup
-        recyclerView.setAdapter(new MyAdapter());
+        MyAdapter adapter = new MyAdapter();
+        adapter.setHasStableIds(true);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.getItemAnimator().setChangeDuration(300);
     }
 
     private void sort() {
@@ -48,24 +54,35 @@ public class MainActivity extends AppCompatActivity {
         int firstVisible = layoutManager.findFirstVisibleItemPosition();
         int lastVisible = layoutManager.findLastVisibleItemPosition();
         int itemsChanged = lastVisible - firstVisible + 1; // + 1 because we start count items from 0
-
-        adapter.notifyItemRangeChanged(firstVisible, itemsChanged);
+        int start = firstVisible - itemsChanged> 0 ? firstVisible - itemsChanged: 0;
+        adapter.notifyItemRangeChanged(start, itemsChanged+itemsChanged);
+        //adapter.notifyItemRangeChanged(0, mItems.size());
     }
 
     /************************************************************************************************
      * simple RecyclerView Adapter
      *************************************************************************************************/
     private class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-
+        Random random = new Random();
         @Override
         public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false);
+            //Log.e("onCreateViewHolder","onCreateViewHolder") ;
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(MyAdapter.ViewHolder holder, int position) {
-            holder.titleView.setText(mItems.get(position));
+        public void onBindViewHolder(final MyAdapter.ViewHolder holder, int position) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("test","onclickk getAdapterPosition " + holder.getAdapterPosition());
+                    Log.e("test","onclickk getItemId " + holder.getItemId());
+                }
+            });
+           // Log.e("onBindViewHolder","onBindViewHolder" + holder.getAdapterPosition());
+            holder.titleView.setText(("Cell " + mItems.get(position)));
+            holder.titleView.setTextSize(5 + 50*(random.nextInt(2)));
         }
 
         @Override
@@ -81,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 titleView = (TextView) itemView.findViewById(R.id.titleTextView);
             }
         }
+
+        @Override
+        public long getItemId(int position) {
+            return mItems.get(position);
+        }
     }
 
     /************************************************************************************************
@@ -90,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort:
+                Log.e("On PRESS","SORT");
                 sort();
                 return true;
 
