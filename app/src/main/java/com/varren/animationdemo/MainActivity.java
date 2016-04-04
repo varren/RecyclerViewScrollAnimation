@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
            // Log.e("onBindViewHolder","onBindViewHolder" + holder.getAdapterPosition());
             holder.titleView.setText(("Cell " + mItems.get(position)));
             //holder.titleView.setTextSize(5 + mItems.get(position));
-            holder.titleView.setTextSize(5 + 50*(random.nextInt(2)));
+            //holder.titleView.setTextSize(5 + 50*(random.nextInt(2)));
         }
 
         @Override
